@@ -39,6 +39,28 @@ class Rosa {
     }
 
     private function resolveArguments($reflection) : array {
-        return []; // @TODO - Autowiring?
+        $constructor = $reflection->getConstructor();
+        $parameters = $constructor->getParameters();
+
+        if (!$parameters) {
+            return $reflection->newInstance();
+        }
+
+        $arguments = [];
+
+        foreach ($parameters as $parameter) {
+            if ($parameter->isDefaultValueAvailable()) {
+                $arguments[] = $parameter->getDefaultValue();
+                continue;
+            }
+
+            if ($parameter->getClass() == null) {
+                exit($parameter->name . ' on ' . $reflection->getName() . ' needs a default value');
+            }
+
+            $arguments[] = $this->fetch($parameter->getClass()->getName());
+        }
+
+        return $arguments;
     }
 }
