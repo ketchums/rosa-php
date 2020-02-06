@@ -2,6 +2,8 @@
 
 namespace Rosa;
 
+use RuntimeException;
+
 class Rosa {
     private $objects = [];
 
@@ -25,7 +27,11 @@ class Rosa {
             return $this->objects[$objectName];
         }
 
-        return $this->make($objectName);
+        $object = $this->make($objectName);
+
+        $this->objects[$objectName] = $object;
+
+        return $object;
     }
 
     /**
@@ -39,12 +45,8 @@ class Rosa {
         $reflection = new \ReflectionClass($objectName);
 
         if (!$reflection->isInstantiable()) {
-            // @TODO - This object can't be instantiated.
+            throw new RuntimeException($reflection->getName() . ' can\'t be instantiated.');
         }
-
-        /*if ($reflection->getConstructor() == null) {
-            return $reflection->newInstanceWithoutConstructor();
-        }*/
 
         $arguments = $this->resolveArguments($reflection);
 
