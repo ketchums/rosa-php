@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 include 'Rosa.php';
-$rosa = new Rosa\Rosa();
+$rosa = new Rosa\Container();
 
 include 'Classes/ParentObject.php';
 include 'Classes/ChildObject.php';
